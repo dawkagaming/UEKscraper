@@ -1,0 +1,11 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: UEKscraper
+Upstream-Contact: dawkagaming
+
+Files: *
+Copyright: 2025, dawkagaming
+License: GPL-3
+
+Files: debian/*
+Copyright: 2025, dawkagaming
+License: GPL-3
