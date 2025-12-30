@@ -113,7 +113,7 @@ QString Parser::ParseToiCal(QString id, QString username, QString password) {
 
         QStringList converted_date = Parser::TimeConverter(date, time);
 
-        if (converted_date.isEmpty()) {
+        if (converted_date.length() < 2) {
             continue;
         };
 
@@ -123,23 +123,21 @@ QString Parser::ParseToiCal(QString id, QString username, QString password) {
 
         result.append("DTSTAMP:" + current_time_str + "\r\n");
         
-        result.append("DTSTART:" + converted_date[0] + "\r\n");
+        result.append("DTSTART;TZID=Europe/Warsaw:" + converted_date[0] + "\r\n");
 
-        result.append("DTEND:" + converted_date[1] + "\r\n");
+        result.append("DTEND;TZID=Europe/Warsaw:" + converted_date[1] + "\r\n");
         
-        if (! subject.isEmpty()) {
+        if ((! type.isEmpty()) && (! subject.isEmpty())) {
+            result.append("SUMMARY:" + type + " | " + subject + "\r\n");
+        } else if (! subject.isEmpty()) {
             result.append("SUMMARY:" + subject + "\r\n");
+        } else if (! type.isEmpty()) {
+            result.append("SUMMARY:" + type + " | ------" + "\r\n");
+        } else {
+            result.append("SUMMARY:------\r\n");
         };
         
-        if (! type.isEmpty()) {
-            result.append("DESCRIPTION:" + type);
-            
-            if (! teacher.isEmpty()) {
-                result.append(", " + teacher);
-            };
-            
-            result.append("\r\n");
-        } else if (! teacher.isEmpty() {
+        if (! teacher.isEmpty()) {
             result.append("DESCRIPTION:" + teacher + "\r\n");
         };
 
@@ -155,8 +153,10 @@ QString Parser::ParseToiCal(QString id, QString username, QString password) {
     if (result.isEmpty()) {
         return QString();
     }
+
+    result.prepend("BEGIN:VTIMEZONE\r\nTZID:Europe/Warsaw\r\nLAST-MODIFIED:20251211T094730Z\r\nTZURL:https://www.tzurl.org/zoneinfo/Europe/Warsaw\r\nX-LIC-LOCATION:Europe/Warsaw\r\nX-PROLEPTIC-TZNAME:LMT\r\nBEGIN:STANDARD\r\nTZNAME:WMT\r\nTZOFFSETFROM:+0124\r\nTZOFFSETTO:+0124\r\nDTSTART:18800101T000000\r\nEND:STANDARD\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0124\r\nTZOFFSETTO:+0100\r\nDTSTART:19150805T000000\r\nEND:STANDARD\r\nBEGIN:DAYLIGHT\r\nTZNAME:CEST\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0200\r\nDTSTART:19160430T230000\r\nRDATE:19400623T020000\r\nRDATE:19430329T020000\r\nRDATE:19440403T020000\r\nRDATE:19450429T000000\r\nRDATE:19460414T000000\r\nRDATE:19470504T020000\r\nRDATE:19480418T020000\r\nRATE:19490410T020000\r\nRDATE:19570602T010000\r\nRDATE:19580330T010000\r\nRDATE:19590531T010000\r\nRDATE:19600403T010000\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0100\r\nDTSTART:19161001T010000\r\nRDATE:19170917T030000\r\nRDATE:19220601T000000\r\nRDATE:19421102T030000\r\nRDATE:19431004T030000\r\nRDATE:19441004T020000\r\nRDATE:19451101T000000\r\nRDATE:19461007T030000\r\nRDATE:19770925T020000\r\nRDATE:19781001T020000\r\nEND:STANDARD\r\nBEGIN:DAYLIGHT\r\nTZNAME:CEST\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0200\r\nDTSTART:19170416T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=3MO;UNTIL=19180415T010000Z\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:EET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0200\r\nDTSTART:19180916T030000\r\nEND:STANDARD\r\nBEGIN:DAYLIGHT\r\nTZNAME:EEST\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0300\r\nDTSTART:19190415T020000\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:EET\r\nTZOFFSETFROM:+0300\r\nTZOFFSETTO:+0200\r\nDTSTART:19190916T030000\r\nEND:STANDARD\r\nBEGIN:DAYLIGHT\r\nTZNAME:CEST\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0200\r\nDTSTART:19441001T000000\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0100\r\nDTSTART:19471005T030000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=1SU;UNTIL=19491002T010000Z\r\nEND:STANDARD\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0100\r\nDTSTART:19570929T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=9;BYDAY=-1SU;UNTIL=19580928T000000Z\r\nEND:STANDARD\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0100\r\nDTSTART:19591004T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=1SU;UNTIL=19611001T000000Z\r\nEND:STANDARD\r\nBEGIN:DAYLIGHT\r\nTZNAME:CEST\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0200\r\nDTSTART:19610528T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=5;BYDAY=-1SU;UNTIL=19640531T000000Z\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0100\r\nDTSTART:19620930T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=9;BYDAY=-1SU;UNTIL=19640927T000000Z\r\nEND:STANDARD\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0100\r\nDTSTART:19770101T000000\r\nRDATE:19880101T000000\r\nEND:STANDARD\r\nBEGIN:DAYLIGHT\r\nTZNAME:CEST\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0200\r\nDTSTART:19770403T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=4;BYDAY=1SU;UNTIL=19800406T000000Z\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0100\r\nDTSTART:19790930T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=9;BYDAY=-1SU;UNTIL=19870927T000000Z\r\nEND:STANDARD\r\nBEGIN:DAYLIGHT\r\nTZNAME:CEST\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0200\r\nDTSTART:19810329T010000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU;UNTIL=19870329T000000Z\r\nEND:DAYLIGHT\r\nBEGIN:DAYLIGHT\r\nTZNAME:CEST\r\nTZOFFSETFROM:+0100\r\nTZOFFSETTO:+0200\r\nDTSTART:19880327T020000\r\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\nEND:DAYLIGHT\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0100\r\nDTSTART:19880925T030000\r\nRRULE:FREQ=YEARLY;BYMONTH=9;BYDAY=-1SU;UNTIL=19950924T010000Z\r\nEND:STANDARD\r\nBEGIN:STANDARD\r\nTZNAME:CET\r\nTZOFFSETFROM:+0200\r\nTZOFFSETTO:+0100\r\nDTSTART:19961027T030000\r\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU\r\nEND:STANDARD\r\nEND:VTIMEZONE\r\n");
     
-    result.prepend("BEGIN:VCALENDAR\r\nVERSION:2.0\r\n");
+    result.prepend("BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//UEK//UEK//EN\r\n");
 
     result.append("END:VCALENDAR\r\n");
 
@@ -198,8 +198,8 @@ QStringList Parser::TimeConverter(QString date, QString time) {
     QDateTime start_datetime(QDate(date_splitted[0].toInt(), date_splitted[1].toInt(), date_splitted[2].toInt()), QTime(start[0].toInt(), start[1].toInt()), QTimeZone("Europe/Warsaw"));
     QDateTime end_datetime(QDate(date_splitted[0].toInt(), date_splitted[1].toInt(), date_splitted[2].toInt()), QTime(end[0].toInt(), end[1].toInt()), QTimeZone("Europe/Warsaw"));
 
-    QString start_result(start_datetime.date().toString("yyyyMMdd") + "T" + start_datetime.time().toString("hhmmsstt"));
-    QString end_result(end_datetime.date().toString("yyyyMMdd") + "T" + end_datetime.time().toString("hhmmsstt"));
+    QString start_result(start_datetime.date().toString("yyyyMMdd") + "T" + start_datetime.time().toString("hhmmss"));
+    QString end_result(end_datetime.date().toString("yyyyMMdd") + "T" + end_datetime.time().toString("hhmmss"));
 
     return {start_result, end_result};
 }

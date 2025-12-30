@@ -15,10 +15,10 @@ int main(int argc, char *argv[]) {
     a.setApplicationName("uekscraper");
     a.setApplicationVersion("0.1");
 
-    QSettings settings("uekscraper.conf", QSettings::IniFormat);
+    QSettings settings("/etc/uekscraper.conf", QSettings::IniFormat);
 
     if (settings.value("username").isNull() || settings.value("password").isNull()) {
-        qFatal() << "Username and/or password has not been provided!\nWrite them to \"uekscraper.conf\" file in the same location as the executable,\nusing INI format:\n username=<your_username>\n password=<your_password>";
+        qFatal() << "Username and/or password has not been provided!\nWrite them to \"/etc/uekscraper.conf\" file,\nusing INI format:\n username=<your_username>\n password=<your_password>";
 
         QCoreApplication::exit(1);
     };

@@ -1,0 +1,11 @@
+[Unit]
+Description=UEKscraper daemon
+After=network.target
+
+[Service]
+Type=simple
+User=uekscraper
+ExecStart=/usr/bin/uekscraper
+
+[Install]
+WantedBy=multi-user.target
