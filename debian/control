@@ -7,7 +7,9 @@ Vcs-Git: https://github.com/dawkagaming/UEKscraper.git
 Build-Depends:
  debhelper (>= 10.0.0),
  debhelper-compat (= 13),
- qt6-base-dev
+ qt6-base-dev,
+ qt6-httpserver-dev,
+ qt6-websockets-dev
 Standards-Version: 4.7.2
 Homepage: https://github.com/dawkagaming/UEKscraper
 

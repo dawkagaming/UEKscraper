@@ -10,8 +10,11 @@
 #include <QTimer>
 
 #include <QTcpServer>
-#include <QTcpSocket>
 #include <QHostAddress>
+
+#include <QHttpServer>
+#include <QHttpServerRequest>
+#include <QHttpServerResponder>
 
 #include <QString>
 
@@ -30,14 +33,13 @@ class Server : public QObject {
         QString username;
         QString password;
 
-        QTcpServer * server;
+        QTcpServer * tcp_server;
+        QHttpServer * http_server;
 
     private slots:
-        void NewConnection();
-
         void Startup();
 
-        void ProcessConnection();
+        void Answer(QString id, QHttpServerResponder &responder);
 };
 
 #endif // SERVER_HPP

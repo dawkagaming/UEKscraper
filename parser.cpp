@@ -51,13 +51,11 @@ QString Parser::ParseToiCal(QString id, QString username, QString password) {
     // Time and date setup
 
     QDateTime current_time = QDateTime::currentDateTimeUtc();
-    QString current_time_str(current_time.date().toString(R"(yyyymmdd)") + "T" + current_time.time().toString(R"(hhmmss)") + "Z");
+    QString current_time_str(current_time.date().toString(R"(yyyyMMdd)") + "T" + current_time.time().toString(R"(hhmmss)") + "Z");
 
     //
 
     QString result;
-
-    result.append("BEGIN:VCALENDAR\r\nVERSION:2.0\r\n");
 
     // Body processing
 
@@ -84,7 +82,7 @@ QString Parser::ParseToiCal(QString id, QString username, QString password) {
 
             switch (i) {
                 case (1):
-                date = column.captured(1).remove(QRegularExpression("<.*>"));
+                    date = column.captured(1).remove(QRegularExpression("<.*>"));
                     break;
                 case (2):
                     time = column.captured(1).remove(QRegularExpression("<.*>"));
@@ -123,22 +121,42 @@ QString Parser::ParseToiCal(QString id, QString username, QString password) {
 
         result.append("UID:" + QUuid::createUuid().toString(QUuid::WithoutBraces) + "\r\n");
 
-        result.append("DTSTAMP:" + converted_date[0] + "\r\n");
+        result.append("DTSTAMP:" + current_time_str + "\r\n");
+        
+        result.append("DTSTART:" + converted_date[0] + "\r\n");
 
         result.append("DTEND:" + converted_date[1] + "\r\n");
+        
+        if (! subject.isEmpty()) {
+            result.append("SUMMARY:" + subject + "\r\n");
+        };
+        
+        if (! type.isEmpty()) {
+            result.append("DESCRIPTION:" + type);
+            
+            if (! teacher.isEmpty()) {
+                result.append(", " + teacher);
+            };
+            
+            result.append("\r\n");
+        } else if (! teacher.isEmpty() {
+            result.append("DESCRIPTION:" + teacher + "\r\n");
+        };
 
-        result.append("SUMMARY:" + subject + "\r\n");
-
-        result.append("ORGANIZER:" + teacher + "\r\n");
-
-        result.append("DESCRIPTION:" + type + "\r\n");
-
-        result.append("LOCATION:" + room + "\r\n");
+        if (! room.isEmpty()) {
+            result.append("LOCATION:" + room + "\r\n");
+        };
 
         result.append("END:VEVENT\r\n");
     };
 
     //
+    
+    if (result.isEmpty()) {
+        return QString();
+    }
+    
+    result.prepend("BEGIN:VCALENDAR\r\nVERSION:2.0\r\n");
 
     result.append("END:VCALENDAR\r\n");
 
@@ -170,7 +188,7 @@ QStringList Parser::TimeConverter(QString date, QString time) {
         return {};
     };
 
-    time = time.sliced(3, 17);
+    time = time.sliced(3, 14);
     time = time.remove(" ");
     QStringList splitted_time = time.split("-");
 
@@ -180,8 +198,8 @@ QStringList Parser::TimeConverter(QString date, QString time) {
     QDateTime start_datetime(QDate(date_splitted[0].toInt(), date_splitted[1].toInt(), date_splitted[2].toInt()), QTime(start[0].toInt(), start[1].toInt()), QTimeZone("Europe/Warsaw"));
     QDateTime end_datetime(QDate(date_splitted[0].toInt(), date_splitted[1].toInt(), date_splitted[2].toInt()), QTime(end[0].toInt(), end[1].toInt()), QTimeZone("Europe/Warsaw"));
 
-    QString start_result(start_datetime.date().toString("yyyymmdd") + "T" + start_datetime.time().toString("hhmmssttt"));
-    QString end_result(end_datetime.date().toString("yyyymmdd") + "T" + end_datetime.time().toString("hhmmssttt"));
+    QString start_result(start_datetime.date().toString("yyyyMMdd") + "T" + start_datetime.time().toString("hhmmsstt"));
+    QString end_result(end_datetime.date().toString("yyyyMMdd") + "T" + end_datetime.time().toString("hhmmsstt"));
 
     return {start_result, end_result};
 }

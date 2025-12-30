@@ -4,8 +4,8 @@ Upstream-Contact: dawkagaming
 
 Files: *
 Copyright: 2025, dawkagaming
-License: GPL-3
+License: GPL-3.0
 
 Files: debian/*
 Copyright: 2025, dawkagaming
-License: GPL-3
+License: GPL-3.0

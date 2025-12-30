@@ -6,84 +6,44 @@ Server::Server(QHostAddress listenip, qint64 port, QString username, QString pas
     this -> username = username;
     this -> password = password;
 
-    this -> server = new QTcpServer;
-
-    connect(this -> server, &QTcpServer::pendingConnectionAvailable, this, &Server::NewConnection);
+    this -> tcp_server = new QTcpServer;
+    this -> http_server = new QHttpServer;
 
     QTimer::singleShot(0, this, &Server::Startup);
 }
 
 Server::~Server() {
-    delete this -> server;
+    delete this -> http_server;
+    delete this -> tcp_server;
 }
 
 void Server::Startup() {
-    this -> server -> listen(this -> listenip, this -> port);
+    this -> tcp_server -> listen(this -> listenip, this -> port);
 
-    if (this -> server -> isListening()) {
-        qInfo() << "Server is listening on:" << this -> server -> serverAddress().toString() << "port" << this -> server -> serverPort();
-    } else {
+    if (! this -> tcp_server -> isListening()) {
         qCritical() << "Server cannot bind to:" << this -> listenip << "port" << this -> port;
 
         QCoreApplication::exit(3);
     };
+
+    this -> http_server -> route("/<arg>", QHttpServerRequest::Method::Get, this, &Server::Answer);
+
+    this -> http_server -> bind(this -> tcp_server);
+
+    qInfo() << "Server is listening on:" << this -> tcp_server -> serverAddress().toString() << "port" << this -> tcp_server -> serverPort();
 }
 
-void Server::NewConnection() {
-    QTcpSocket * connection = this -> server -> nextPendingConnection();
+void Server::Answer(QString id, QHttpServerResponder &responder) {
+    if (id.length() != 6) {
+        responder.write(QHttpServerResponder::StatusCode::NotFound);
+    } else {
+        QString data(Parser::ParseToiCal(id, this -> username, this -> password));
 
-    connect(connection, &QTcpSocket::readyRead, this, &Server::ProcessConnection);
-}
-
-void Server::ProcessConnection() {
-    QTcpSocket * connection = qobject_cast<QTcpSocket *>(sender());
-
-    if (connection == nullptr) {
-        return;
+        if (data.isEmpty()) {
+            responder.write(QHttpServerResponder::StatusCode::NoContent);
+        } else {
+            responder.write(data.toUtf8(), QString("text/calendar").toUtf8(), QHttpServerResponder::StatusCode::Ok);
+        };
     }
 
-    QString request(connection -> readAll());
-
-    QString data;
-
-    if (request.isEmpty()) {
-        data = "HTTP/1.1 404 Not Found\r\nconnection: close";
-
-        connection -> write(data.toUtf8());
-        connection -> flush();
-        connection -> disconnectFromHost();
-        connection -> deleteLater();
-
-        return;
-    };
-
-    request = request.split("\n").first();
-    request = request.split(" ")[1];
-    request = request.sliced(1);
-
-    if (request.length() != 6 || request.toInt() == 0) {
-        data = "HTTP/1.1 404 Not Found\r\nconnection: close";
-
-        connection -> write(data.toUtf8());
-        connection -> flush();
-        connection -> disconnectFromHost();
-        connection -> deleteLater();
-
-        return;
-    };
-
-    data = Parser::ParseToiCal(request, this -> username, this -> password);
-
-    if (data.isEmpty()) {
-        data = "HTTP/1.1 404 Not Found\r\nconnection: close";
-    } else {
-        data.prepend("content-type: text/calendar; charset=UTF-8\r\ncontent-length:" + QString::number(data.toUtf8().length()) +"\r\nconnection: close\r\n\r\n");
-        data.prepend("HTTP/1.1 200 OK\r\n");
-    };
-
-    connection -> write(data.toUtf8());
-
-    connection -> flush();
-    connection -> disconnectFromHost();
-    connection -> deleteLater();
 }

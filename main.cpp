@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     QSettings settings("uekscraper.conf", QSettings::IniFormat);
 
     if (settings.value("username").isNull() || settings.value("password").isNull()) {
-        qFatal() << "Username and/or password has not been provided!\nWrite them to \"uekscraper.conf\" file in the same location as the executable,\nusing INI format:\nusername=<your_username>\npassword=<your_password>";
+        qFatal() << "Username and/or password has not been provided!\nWrite them to \"uekscraper.conf\" file in the same location as the executable,\nusing INI format:\n username=<your_username>\n password=<your_password>";
 
         QCoreApplication::exit(1);
     };
