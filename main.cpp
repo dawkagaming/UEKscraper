@@ -17,10 +17,16 @@ int main(int argc, char *argv[]) {
 
     QSettings settings("/etc/uekscraper.conf", QSettings::IniFormat);
 
-    if (settings.value("username").isNull() || settings.value("password").isNull()) {
-        qFatal() << "Username and/or password has not been provided!\nWrite them to \"/etc/uekscraper.conf\" file,\nusing INI format:\n username=<your_username>\n password=<your_password>";
+    if (settings.value("userloginmode").isNull()) {
+        settings.setValue("userloginmode", true);
+    };
 
-        QCoreApplication::exit(1);
+    if (! settings.value("userloginmode").toBool()) {
+        if (settings.value("username").isNull() || settings.value("password").isNull()) {
+            qFatal() << "Username and/or password has not been provided!\nWrite them to \"/etc/uekscraper.conf\" file,\nusing INI format:\n username=<your_username>\n password=<your_password>";
+
+            QCoreApplication::exit(1);
+        };
     };
 
     if (settings.value("port").isNull()) {

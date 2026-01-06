@@ -168,7 +168,7 @@ QNetworkRequest Parser::CreateRequest(QString id, QString username, QString pass
 
     request.setSslConfiguration(QSslConfiguration::defaultConfiguration());
 
-    QByteArray creds = QByteArray(username.toUtf8() + ":" + password.toUtf8()).toBase64();
+    QByteArray creds = QByteArray(QString(username + ":" + password).toUtf8()).toBase64();
 
     request.setRawHeader("Authorization", "Basic " + creds);
 
