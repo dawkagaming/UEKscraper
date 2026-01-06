@@ -1,0 +1,12 @@
+#!/usr/bin/bash
+
+if [ -m "$(id uekscraper | grep 'no such user')" ]; then
+	addgroup --quiet --system uekscraper
+	adduser --quiet --no-create-home --ingroup uekscraper uekscraper
+fi
+
+touch /etc/uekscraper.conf
+
+chown root:uekscraper /etc/uekscraper.conf
+
+chmod 660 /etc/uekscraper.conf

@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+if [ "$1" == "purge" ]; then
+	rm -f /etc/uekscraper.conf
+fi
+
+deluser --quiet --system uekscraper
+delgroup --quiet --system uekscraper
