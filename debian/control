@@ -1,16 +1,14 @@
 Source: uekscraper
 Section: other
-Priority: optional
 Maintainer: dawkagaming <example@example.org>
 Vcs-Browser: https://github.com/dawkagaming/UEKscraper
 Vcs-Git: https://github.com/dawkagaming/UEKscraper.git
 Build-Depends:
- debhelper (>= 10.0.0),
  debhelper-compat (= 13),
+ cmake,
  qt6-base-dev,
  qt6-httpserver-dev,
- qt6-websockets-dev
-Standards-Version: 4.7.2
+Standards-Version: 4.7.4
 Homepage: https://github.com/dawkagaming/UEKscraper
 
 Package: uekscraper
