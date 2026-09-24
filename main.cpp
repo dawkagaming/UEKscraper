@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
         qWarning() << "Saved listening address is invalid, setting to all addresses.";
     };
 
-    Server server(QHostAddress(settings.value("listenip").toString()), settings.value("port").toInt(), settings.value("username").toString(), settings.value("password").toString());
+    Server server(QHostAddress(settings.value("listenip").toString()), settings.value("port").toInt(), settings.value("username").toString(), settings.value("password").toString(), settings.value("userloginmode").toBool());
 
     return a.exec();
 }

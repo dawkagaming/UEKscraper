@@ -22,7 +22,7 @@
 
 #include <QString>
 
-#include <parser.hpp>
+#include "parser.hpp"
 
 class Server : public QObject {
     Q_OBJECT
@@ -50,7 +50,7 @@ class Server : public QObject {
 
         void AnswerStandalone(QString id, QHttpServerResponder &responder);
 
-        void AnswerUserLogin(QString id, QHttpServerResponder &responder);
+        void AnswerUserLogin(QString id, const QHttpServerRequest &request, QHttpServerResponder &responder);
 };
 
 #endif // SERVER_HPP
