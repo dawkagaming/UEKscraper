@@ -1,5 +1,5 @@
 Source: uekscraper
-Section: other
+Section: net
 Maintainer: dawkagaming <example@example.org>
 Vcs-Browser: https://github.com/dawkagaming/UEKscraper
 Vcs-Git: https://github.com/dawkagaming/UEKscraper.git
@@ -17,5 +17,4 @@ Architecture: any
 Depends:
  ${misc:Depends},
  ${shlibs:Depends}
-Suggests:
 Description: UEKscraper is a tool to scrap Cracow's University of Economics time schedule.
