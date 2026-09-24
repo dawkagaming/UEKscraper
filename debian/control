@@ -8,6 +8,7 @@ Build-Depends:
  cmake,
  qt6-base-dev,
  qt6-httpserver-dev,
+ qt6-websockets-dev,
 Standards-Version: 4.7.4
 Homepage: https://github.com/dawkagaming/UEKscraper
 
