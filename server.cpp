@@ -64,6 +64,15 @@ void Server::AnswerUserLogin(QString id, const QHttpServerRequest &request, QHtt
     } else {
         QStringList auth = Server::ExtractAuth(request.headers());
 
+        if (auth.size() != 2) {
+            QHttpHeaders headers;
+            headers.append(QHttpHeaders::WellKnownHeader::WWWAuthenticate, "Basic realm=\"UEK\"");
+
+            responder.write(headers, QHttpServerResponder::StatusCode::Unauthorized);
+
+            return;
+        };
+
         QString data(Parser::ParseToiCal(id, auth[0], auth[1]));
 
         if (data.isEmpty()) {
@@ -76,6 +85,14 @@ void Server::AnswerUserLogin(QString id, const QHttpServerRequest &request, QHtt
 
 QStringList Server::ExtractAuth(QHttpHeaders headers) {
     QByteArrayView auth_header = headers.value(QHttpHeaders::WellKnownHeader::Authorization);
+
+    if (auth_header.size() < 6) {
+        return QStringList();
+    };
+
+    if (QString::fromUtf8(auth_header.first(6).toByteArray()) != "Basic ") {
+        return QStringList();
+    }
 
     QByteArray data = QByteArray::fromBase64(auth_header.sliced(6).toByteArray());
 

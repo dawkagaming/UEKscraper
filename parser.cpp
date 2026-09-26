@@ -205,4 +205,4 @@ QStringList Parser::TimeConverter(QString date, QString time) {
 }
 
 QString Parser::url_part_1 = "https://planzajec.uek.krakow.pl/index.php?typ=G&id=";
-QString Parser::url_part_2 = "&okres=2";
+QString Parser::url_part_2 = "&okres=3";
